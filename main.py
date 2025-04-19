@@ -49,6 +49,8 @@ parser.add_argument("email", help="Your email")
 parser.add_argument("-a", "--add", help="Add your email", action="store_true")
 # Add argument to store the password of the email
 parser.add_argument("-p", "--pwd", help="Store your password")
+# Add argument to remove an entry
+parser.add_argument("-r", "--remove", help="Remove an entry", action="store_true")
 
 # Analyze arguments
 args = parser.parse_args()
@@ -99,6 +101,16 @@ if args.add and args.pwd is not None:
     with passpy_pwd_file_path.open("w", encoding="utf-8") as file:
         # f.write(f"{args.email},{args.pwd}\n")
         data[args.email] = password.decode(encoding="utf-8")
+        json.dump(data, file, indent=4)
+
+# Remove an entry
+elif args.remove and args.email is not None:
+
+    # remove the entry on de dict
+    print(f"Removing {args.email}")
+    del data[args.email]
+
+    with passpy_pwd_file_path.open("w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
 
 # Base case, pass only the email
