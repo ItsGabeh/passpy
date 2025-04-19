@@ -45,7 +45,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument("email", help="Your email")
 # Add argument to store an email
 parser.add_argument("-a", "--add", help="Add your email", action="store_true")
+# Add argument to store the password of the email
+parser.add_argument("-p", "--pwd", help="Store your password")
 
 # Analyze arguments
 args = parser.parse_args()
-print(args.email, args.add)
+print(args.email, args.add, args.pwd)
