@@ -13,6 +13,7 @@ import argparse
 import pathlib
 import os
 import json
+from cryptography.fernet import Fernet
 
 # Create the program directory if not exists
 # Get the user home directory
@@ -61,6 +62,30 @@ passpy_pwd_file_path = pathlib.Path(passpy_dir_path, passpy_pwd_file)
 if not passpy_pwd_file_path.exists():
     passpy_pwd_file_path.touch(exist_ok=True)
 
+# create Fernet key
+# the key is stored in a file, but if os not it will create a new one
+passpy_key_file = "passpy_key"
+passpy_key_file_path = pathlib.Path(passpy_dir_path, passpy_key_file)
+if not passpy_key_file_path.exists():
+    passpy_key_file_path.touch(exist_ok=True)
+
+    # this key must be stored in a file to recover
+    key = Fernet.generate_key()
+
+    # write the key to the file
+    with passpy_key_file_path.open("wb") as key_file:
+        key_file.write(key)
+
+# if there is a passpy key then load the key
+with passpy_key_file_path.open("rb") as key_file:
+    key = key_file.read()
+
+# load the fernet key
+f = Fernet(key)
+
+# encrypt the password
+password = f.encrypt(args.pwd.encode())
+
 data = {}
 
 with passpy_pwd_file_path.open("r", encoding="utf-8") as f:
@@ -73,6 +98,6 @@ if args.add and args.pwd is not None:
 
     with passpy_pwd_file_path.open("w", encoding="utf-8") as f:
         # f.write(f"{args.email},{args.pwd}\n")
-        data[args.email] = args.pwd
+        data[args.email] = str(password)
         json.dump(data, f, indent=4)
 
