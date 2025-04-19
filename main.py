@@ -12,6 +12,7 @@
 import argparse
 import pathlib
 import os
+import json
 
 # Create the program directory if not exists
 # Get the user home directory
@@ -54,13 +55,24 @@ print(args.email, args.add, args.pwd)
 
 passpy_pwd_file = "passpy_pwd"
 
+
+# check if the passpy file exists, otherwise it will create a new one
+passpy_pwd_file_path = pathlib.Path(passpy_dir_path, passpy_pwd_file)
+if not passpy_pwd_file_path.exists():
+    passpy_pwd_file_path.touch(exist_ok=True)
+
+data = {}
+
+with passpy_pwd_file_path.open("r", encoding="utf-8") as f:
+    content = f.read()
+    if content != "":
+        data = json.loads(content)
+
 # Save the mail and password to a file in passpy dir
 if args.add and args.pwd is not None:
-    passpy_pwd_file_path = pathlib.Path(passpy_dir_path, passpy_pwd_file)
 
-    # check if the passpy file exists, otherwise it will create a new one
-    if not passpy_pwd_file_path.exists():
-        passpy_pwd_file_path.touch(exist_ok=True)
+    with passpy_pwd_file_path.open("w", encoding="utf-8") as f:
+        # f.write(f"{args.email},{args.pwd}\n")
+        data[args.email] = args.pwd
+        json.dump(data, f, indent=4)
 
-    with passpy_pwd_file_path.open("a", encoding="utf-8") as f:
-        f.write(f"{args.email},{args.pwd}\n")
