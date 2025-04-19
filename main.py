@@ -98,10 +98,11 @@ if args.add and args.pwd is not None:
 
     with passpy_pwd_file_path.open("w", encoding="utf-8") as file:
         # f.write(f"{args.email},{args.pwd}\n")
-        data[args.email] = str(password)
+        data[args.email] = password.decode(encoding="utf-8")
         json.dump(data, file, indent=4)
 
 # Base case, pass only the email
 # return the email and password
 elif args.email is not None:
-    print(f"email: {args.email}: password: {data[args.email]}")
+    pwd = data[args.email]
+    print(f"email: {args.email}: password: {f.decrypt(pwd).decode()}")
