@@ -83,9 +83,6 @@ with passpy_key_file_path.open("rb") as key_file:
 # load the fernet key
 f = Fernet(key)
 
-# encrypt the password
-password = f.encrypt(args.pwd.encode())
-
 data = {}
 
 with passpy_pwd_file_path.open("r", encoding="utf-8") as f:
@@ -96,8 +93,15 @@ with passpy_pwd_file_path.open("r", encoding="utf-8") as f:
 # Save the mail and password to a file in passpy dir
 if args.add and args.pwd is not None:
 
+    # encrypt the password
+    password = f.encrypt(args.pwd.encode())
+
     with passpy_pwd_file_path.open("w", encoding="utf-8") as f:
         # f.write(f"{args.email},{args.pwd}\n")
         data[args.email] = str(password)
         json.dump(data, f, indent=4)
 
+# Base case, pass only the email
+# return the email and password
+elif args.email is not None:
+    print(f"email: {args.email}: password: {data[args.email]}")
