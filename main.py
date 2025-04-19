@@ -51,3 +51,16 @@ parser.add_argument("-p", "--pwd", help="Store your password")
 # Analyze arguments
 args = parser.parse_args()
 print(args.email, args.add, args.pwd)
+
+passpy_pwd_file = "passpy_pwd"
+
+# Save the mail and password to a file in passpy dir
+if args.add and args.pwd is not None:
+    passpy_pwd_file_path = pathlib.Path(passpy_dir_path, passpy_pwd_file)
+
+    # check if the passpy file exists, otherwise it will create a new one
+    if not passpy_pwd_file_path.exists():
+        passpy_pwd_file_path.touch(exist_ok=True)
+
+    with passpy_pwd_file_path.open("a", encoding="utf-8") as f:
+        f.write(f"{args.email},{args.pwd}\n")
