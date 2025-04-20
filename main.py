@@ -54,7 +54,6 @@ parser.add_argument("-r", "--remove", help="Remove an entry", action="store_true
 
 # Analyze arguments
 args = parser.parse_args()
-print(args.email, args.add, args.pwd)
 
 passpy_pwd_file = "passpy_pwd"
 
