@@ -105,9 +105,12 @@ if args.add and args.pwd is not None:
 # Remove an entry
 elif args.remove and args.email is not None:
 
-    # remove the entry on de dict
-    print(f"Removing {args.email}")
-    del data[args.email]
+    if args.email in data:
+        # remove the entry on de dict
+        print(f"Removing {args.email}")
+        del data[args.email]
+    else:
+        print(f"No password known for {args.email}")
 
     with passpy_pwd_file_path.open("w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
@@ -115,5 +118,9 @@ elif args.remove and args.email is not None:
 # Base case, pass only the email
 # return the email and password
 elif args.email is not None:
-    pwd = data[args.email]
-    print(f"email: {args.email}: password: {f.decrypt(pwd).decode()}")
+
+    if args.email in data:
+        pwd = data[args.email]
+        print(f"email: {args.email}: password: {f.decrypt(pwd).decode()}")
+    else:
+        print(f"No password known for {args.email}")
